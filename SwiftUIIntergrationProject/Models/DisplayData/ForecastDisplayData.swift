@@ -20,6 +20,9 @@ struct ForecastItemDisplayData: Equatable, Identifiable {
   let windSpeedText: String
   let windDirectionText: String
   let rainText: String?
+    static func == (lhs: ForecastItemDisplayData, rhs: ForecastItemDisplayData) -> Bool {
+       return lhs.timeDateText == rhs.timeDateText
+      }
 }
 
 extension ForecastDisplayData {

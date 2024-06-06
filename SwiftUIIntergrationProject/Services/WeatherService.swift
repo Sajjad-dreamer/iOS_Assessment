@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import MapKit
 
+
   //
   ///
   /**
@@ -18,6 +19,41 @@ struct WeatherService {
   /// Example function signatures. Takes in location and returns publishers that contain
 //  var retrieveWeatherForecast: (CLLocation) -> DataPublisher<ForecastJSONData?>
 //  var retrieveCurrentWeather: (CLLocation) -> DataPublisher<CurrentWeatherJSONData?>
+    static func retrieveWeatherForecast(location: CLLocation) -> AnyPublisher<ForecastJSONData, SimpleError> {
+        let forecastURL = forecastURL(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+        let session = URLSession.shared
+        let decoder = JSONDecoder()
+        return session.dataTaskPublisher(for: forecastURL!)
+            .map(\.data)
+            .mapError { error in
+                SimpleError.dataLoad(error.localizedDescription)
+            }
+            .decode(type: ForecastJSONData.self, decoder: decoder)
+            .mapError { error in
+                SimpleError.dataParse(error.localizedDescription)
+            }
+            .eraseToAnyPublisher()
+
+    }
+    
+    static func retrieveCurrentWeather(location: CLLocation) -> AnyPublisher<CurrentWeatherJSONData, SimpleError> {
+        let currentWeatherURL = currentWeatherURL(location: location)
+        let session = URLSession.shared
+        let decoder = JSONDecoder()
+        return session.dataTaskPublisher(for: currentWeatherURL!)
+            .map(\.data)
+            .mapError { error in
+                SimpleError.dataLoad(error.localizedDescription)
+            }
+            .decode(type: CurrentWeatherJSONData.self, decoder: decoder)
+            .mapError { error in
+                SimpleError.dataParse(error.localizedDescription)
+            }
+
+            .eraseToAnyPublisher()
+
+    }
+
 }
 
 extension WeatherService {

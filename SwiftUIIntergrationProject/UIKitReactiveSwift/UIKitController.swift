@@ -8,7 +8,6 @@
 import Foundation
 import UIKit
 import ReactiveSwift
-import ReactiveCocoa
 import SnapKit
 
 // TODO: Create UIKit View that either pre-selects address or user enters address, and retrieves current weather plus weather forecast
